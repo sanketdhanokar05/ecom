@@ -10,27 +10,27 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="order_tbl")
-public class Order
-{
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="order_id")
-    private int orderId;
+@Table(name = "order_tbl")
+public class Order {
 
-    @Column(name="order_date")
-    private LocalDate orderDate;
+	@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "order_id")
+	private int orderId;
 
-    @Column(name="order_amount")
-    private double orderAmount;
+	@Column(name = "order_date")
+	private LocalDate orderDate;
 
-    @Column(name="product_id")
-    private int productId;
+	@Column(name = "order_amount")
+	private double orderAmount;
 
-    private int quantity;
+	@Column(name = "product_id")
+	private int productId;
 
-    @Column(name="customer_id")
-    private int customerId;
+	private int quantity;
+
+	@Column(name = "customer_id")
+	private int customerId;
 
 	public int getOrderId() {
 		return orderId;
@@ -78,6 +78,7 @@ public class Order
 
 	public void setCustomerId(int customerId) {
 		this.customerId = customerId;
-	}
-    
+	}	
+	
+
 }

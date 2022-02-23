@@ -1,13 +1,15 @@
 package com.abc.ecom.service;
 
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.abc.ecom.entity.Order;
-import com.abc.ecom.exception.ResourceNotFoundException;
+import com.abc.ecom.entity.Product;
+import com.abc.ecom.exception.ProductNotFoundException;
+import com.abc.ecom.exception.ResourceNotFoundExcption;
 import com.abc.ecom.repository.OrderRepository;
 import com.abc.ecom.repository.ProductRepository;
 
@@ -23,52 +25,39 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public Order saveOrder(Order order) {
 		
-		Order savedOrder = orderRepository.save(order);
+		order.setOrderDate(LocalDate.now());
 		
-		return savedOrder;
-	}
-
-	@Override
-	public List<Order> getAllOrders() {
-		List<Order> order = orderRepository.findAll();
-		return orders;
-	}
-
-	@Override
-	public Order getOrderById(int customerId) throws ResourceNotFoundException {
+		// calcualte Order amount
 		
-		Optional<Order> optionalOrder = orderRepository.findById(orderId);
+		int productId = order.getProductId();
 		
-		if(optionalOrder.isEmpty()) {
-			throw new ResourceNotFoundException("Sorry! Order is not existing with id: "+orderId);
-		}
-		return optionalOrder.get();		
-	}
-	
-	@Override
-	public Order updateOrder(Order order) {
+		Optional<Product> optionalProduct = productRepository.findById(productId);
 		
-		Optional<Order> optionalOrder = orderRepository.findById(order.getOrderrId());
-		
-		if(optionalOrder.isEmpty()) {
-			throw new ResourceNotFoundException("Sorry! Order is not existing with id: "+order.getCustomerId());
-		}
-		
-		Order updatedOrder = orderRepository.save(order);
-		
-		return updatedOrder;
-	}
-
-	@Override
-	public void deleteOrder(int orderId) {
-	
-		Optional<Order> optionalOrder = orderRepository.findById(orderId);
-		
-		if(optionalOrder.isPresent()) {			
-			customerRepository.deleteById(orderId);			
+		if(optionalProduct.isEmpty()) {
+			throw new ProductNotFoundException("Product not exising with id: "+productId);
 		}
 		else {
-			throw new ResourceNotFoundException("Sorry! Order is not existing with id: "+orderId);
-		}	
+			Product product = optionalProduct.get();
+			double unitPrice = product.getProductPrice();
+			double orderAmount = order.getQuantity() * unitPrice;
+			
+			order.setOrderAmount(orderAmount);
+		}		
+		
+		Order newOrder = orderRepository.save(order);
+		return newOrder;
 	}
+
+	@Override
+	public Order getOrderDetails(int orderId) {
+	
+		Optional<Order> optionalOrder = orderRepository.findById(orderId);
+		if(optionalOrder.isEmpty()) {
+			throw new ResourceNotFoundExcption("Order not found with Order Id: "+orderId);
+		}
+		
+		return optionalOrder.get();
+	}
+
+	
 }

@@ -11,16 +11,15 @@ import com.abc.ecom.exception.CustomerNotFoundException;
 import com.abc.ecom.repository.CustomerRepository;
 
 @Service
-public class CustomerServcieImpl implements CustomerService {
-	
+public class CustomerServiceImpl implements CustomerService {
+
 	@Autowired
 	private CustomerRepository customerRepository;
 
 	@Override
 	public Customer saveCustomer(Customer customer) {
-		
+
 		Customer savedCustomer = customerRepository.save(customer);
-		
 		return savedCustomer;
 	}
 
@@ -32,39 +31,32 @@ public class CustomerServcieImpl implements CustomerService {
 
 	@Override
 	public Customer getCustomerById(int customerId) throws CustomerNotFoundException {
-		
 		Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
-		
-		if(optionalCustomer.isEmpty()) {
-			throw new CustomerNotFoundException("Sorry! Customer is not existing with id: "+customerId);
+		if (optionalCustomer.isEmpty()) {
+			throw new CustomerNotFoundException("Sorry! Customer not found with id" + customerId);
 		}
-		return optionalCustomer.get();		
-	}
-	
-	@Override
-	public Customer updateCustomer(Customer customer) {
-		
-		Optional<Customer> optionalCustomer = customerRepository.findById(customer.getCustomerId());
-		
-		if(optionalCustomer.isEmpty()) {
-			throw new CustomerNotFoundException("Sorry! Customer is not existing with id: "+customer.getCustomerId());
-		}
-		
-		Customer updatedCustomer = customerRepository.save(customer);
-		
-		return updatedCustomer;
+		return optionalCustomer.get();
 	}
 
 	@Override
 	public void deleteCustomer(int customerId) {
-	
 		Optional<Customer> optionalCustomer = customerRepository.findById(customerId);
-		
-		if(optionalCustomer.isPresent()) {			
-			customerRepository.deleteById(customerId);			
+		if (optionalCustomer.isPresent()) {
+			customerRepository.deleteById(customerId);
+		} else {
+			throw new CustomerNotFoundException("sorry customer is not existing with id:" + customerId);
 		}
-		else {
-			throw new CustomerNotFoundException("Sorry! Customer is not existing with id: "+customerId);
-		}	
 	}
+
+	@Override
+	public Customer updateCustomer(Customer customer) {
+		Optional<Customer> optionalCustomer = customerRepository.findById(customer.getCustomerId());
+		if (optionalCustomer.isEmpty()) {
+			throw new CustomerNotFoundException("Sorry! customer not found with id" + customer.getCustomerId());
+		}
+		Customer updatedCustomer = customerRepository.save(customer);
+		return updatedCustomer;
+
+	}
+
 }

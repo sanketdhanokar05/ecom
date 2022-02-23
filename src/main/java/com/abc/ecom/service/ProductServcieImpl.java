@@ -68,4 +68,18 @@ public class ProductServcieImpl implements ProductService {
 		}			
 	}
 
+	@Override
+	public Product getProductByName(String productName) {
+		
+		Product product = productRepository.findByProductName(productName);
+		
+		return product;
+	}
+
+	@Override
+	public List<Product> getProductsByCategory(String category) {
+		
+		return productRepository.findProductByCategory(category);
+	}
+
 }

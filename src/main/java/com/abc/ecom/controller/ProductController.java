@@ -45,6 +45,18 @@ public class ProductController {
 		return new ResponseEntity<>(product, HttpStatus.OK);
 	}
 	
+	@GetMapping("/getbyname/{pname}")
+	public ResponseEntity<?> fetchProductDetailsByNane(@PathVariable("pname") String pname) {
+		Product product = productService.getProductByName(pname);
+		return new ResponseEntity<>(product, HttpStatus.OK);
+	}
+	
+	@GetMapping("/getbycategory/{category}")
+	public ResponseEntity<List<Product>> fetchProductDetailsByCategory(@PathVariable("category") String category) {
+		List<Product> products = productService.getProductsByCategory(category);
+		return new ResponseEntity<>(products, HttpStatus.OK);
+	}
+	
 	@DeleteMapping("/delete/{pid}")
 	public ResponseEntity<?> deleteProduct(@PathVariable("pid") int productId) {
 		productService.deleteProduct(productId);
